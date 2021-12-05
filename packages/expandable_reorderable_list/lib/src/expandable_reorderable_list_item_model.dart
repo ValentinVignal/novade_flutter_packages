@@ -28,6 +28,7 @@ class ExpandableReorderableListItemModel extends ChangeNotifier {
 
   /// Whether the item is collapsed or not.
   bool get isCollapsed => _isCollapsed;
+  // change
   bool _isCollapsed;
 
   /// Set the state of the item.

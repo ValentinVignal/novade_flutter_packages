@@ -5,33 +5,42 @@ jobs:
     runs-on: ubuntu-latest
     name: hello
     steps:
-      - name: Print label
-        run: echo Hello world
-  checkLabels:
-    runs-on: ubuntu-latest
-    if: ${{ startsWith(github.event.labels.*.name, 'p:') }}
-  tests:
-    needs: [checkLabels]
-    strategy:
-      matrix:
-        label: ${{ github.event.pull_request.labels.*.name.filter((name) => name.startsWith('p:')).map((name) => name.substring(3)) }}
-    runs-on: ubuntu-latest
-    name: Tests
-    steps:
-      - name: Print label
-        run: echo Hello world "${{matrix.label}}"
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v1
-      # - id: get-directory
-      #   uses: actions/github-script@v5
-      #   with:
-      #     result-encoding: string
-      #     script: |
-      #       context.
-      # - run: flutter pub get
-      #   working-directory: ./package/${{ matrix.label }}
-      # - name: Run tests
-      #   run: flutter test
-      #   working-directory: ./package/${{ matrix.label }}
+      - name: Echo github obj
+        run: echo ${{ toJson(github) }}
+        continue-on-error: true
+        # labels=$( ${{ github.event.pull_request.labels }} | jq '. map(select(.name | startswith ("p: "))) | .[] .description' )
+      - name: Labels
+        id: get-labels
+        run: |
+          labels=$( '${{ toJson(github.event.pull_request.labels) }}' | jq '. map(select(.name | startswith ("p: "))) | .[] .description' )
+          echo $labels
+          echo "::set-output name=labels::$labels"
+  # echo "`jq '. map(select(.label | startswith ("p: "))) | .[] .description' ${{github.event.labels}}`"
+  # checkLabels:
+  #   runs-on: ubuntu-latest
+  #   if: ${{ startsWith(github.event.labels.*.name, 'p:') }}
+  # tests:
+  #   needs: [checkLabels]
+  #   strategy:
+  #     matrix:
+  #       label: ${{ github.event.pull_request.labels.*.name.filter((name) => name.startsWith('p:')).map((name) => name.substring(3)) }}
+  #   runs-on: ubuntu-latest
+  #   name: Tests
+  #   steps:
+  #     - name: Print label
+  #       run: echo Hello world "${{matrix.label}}"
+  #     - name: Checkout code
+  #       uses: actions/checkout@v2
+  #     - name: Set up Flutter
+  #       uses: subosito/flutter-action@v1
+  #     # - id: get-directory
+  #     #   uses: actions/github-script@v5
+  #     #   with:
+  #     #     result-encoding: string
+  #     #     script: |
+  #     #       context.
+  #     # - run: flutter pub get
+  #     #   working-directory: ./package/${{ matrix.label }}
+  #     # - name: Run tests
+  #     #   run: flutter test
+  #     #   working-directory: ./package/${{ matrix.label }}

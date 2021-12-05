@@ -1,0 +1,29 @@
+name: Tests
+on: [pull_request]
+jobs:
+  # checkLabels:
+  #   runs-on: ubuntu-latest
+  #   if: ${{ startsWith(github.event.labels.*.name, 'p:') }}
+  tests:
+    # needs: [checkLabels]
+    # strategy:
+    #   matrix:
+    #     label: ${{ github.event.pull_request.labels.*.name.filter((name) => name.startsWith('p:')).map((name) => name.substring(3)) }}
+    runs-on: ubuntu-latest
+    name: Tests
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v1
+      # - id: get-directory
+      #   uses: actions/github-script@v5
+      #   with:
+      #     result-encoding: string
+      #     script: |
+      #       context.
+      # - run: flutter pub get
+      #   working-directory: ./package/${{ matrix.label }}
+      # - name: Run tests
+      #   run: flutter test
+      #   working-directory: ./package/${{ matrix.label }}

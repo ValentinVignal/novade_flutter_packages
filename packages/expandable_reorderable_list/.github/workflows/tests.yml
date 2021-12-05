@@ -1,14 +1,14 @@
 name: Tests
 on: [pull_request]
 jobs:
-  checkLabels:
-    runs-on: ubuntu-latest
-    if: ${{ startsWith(github.event.labels.*.name, 'p:') }}
+  # checkLabels:
+  #   runs-on: ubuntu-latest
+  #   if: ${{ startsWith(github.event.labels.*.name, 'p:') }}
   tests:
-    needs: [checkLabels]
-    strategy:
-      matrix:
-        label: ${{ github.event.pull_request.labels.*.name.filter((name) => name.startsWith('p:')).map((name) => name.substring(3)) }}
+    # needs: [checkLabels]
+    # strategy:
+    #   matrix:
+    #     label: ${{ github.event.pull_request.labels.*.name.filter((name) => name.startsWith('p:')).map((name) => name.substring(3)) }}
     runs-on: ubuntu-latest
     name: Tests
     steps:
@@ -22,8 +22,8 @@ jobs:
           result-encoding: string
           script: |
             context.
-      - run: flutter pub get
-        working-directory: ./package/${{ matrix.label }}
-      - name: Run tests
-        run: flutter test
-        working-directory: ./package/${{ matrix.label }}
+      # - run: flutter pub get
+      #   working-directory: ./package/${{ matrix.label }}
+      # - name: Run tests
+      #   run: flutter test
+      #   working-directory: ./package/${{ matrix.label }}

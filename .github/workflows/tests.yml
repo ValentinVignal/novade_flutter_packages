@@ -48,27 +48,56 @@ jobs:
   #     # - name: Run tests
   #     #   run: flutter test
   #     #   working-directory: ./package/${{ matrix.label }}
-  changed-files:
+  folders:
     runs-on: ubuntu-latest
     # Map a step output to a job output
     outputs:
-      all: ${{ steps.changes.outputs.all}}
-      dart: ${{ steps.changes.outputs.ts }}
+      folder: ${{ steps.changes.outputs.folders }}
     steps:
       # Make sure we have some code to diff.
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
-          fetch-depth: 0
+          fetch-depth: 0 # To retrieve the full git history.
       - name: Get changed files
         id: changes
         # Set outputs using the command.
         run: |
           echo "::set-output name=all::$(git diff --name-only --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | xargs)"
           echo "::set-output name=dart::$(git diff --name-only --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep .dart$ | xargs)"
-          echo "::set-output name=folders::$(git diff --name-only --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep ^packages | cut -d/ -f 1-2| uniq | xargs) "
+          folders=$((
+            echo '{ "folder" : ['
+            git diff --name-only --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep ^packages | cut -d/ -f 1-2| uniq | sed 's/^\(.*\)$/\\"\1\\",/' | xargs | sed 's/,$//g'
+            echo ']}'
+          ) | jq -c .)
+          echo $folders
+          echo $folders | jq .
+          echo "::set-output name=folders::$folders"
       - name: echo all changed files
         run: |
           echo ${{  steps.changes.outputs.all }}
           echo ${{  steps.changes.outputs.dart }}
           echo ${{  steps.changes.outputs.folders }}
+  next-test:
+    runs-on: ubuntu-latest
+    name: test the matrix
+    needs: folders
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.folders.outputs.folder) }}
+    steps:
+      - run: echo ${{ matrix.folder }}
+
+  # changed-packages-2:
+  #     runs-on: ubuntu-latest
+  #     outputs:
+  #       matrix: ${{ steps.set-matrix.outputs.matrix }
+  #     steps:
+  #       - uses: actions/checkout@v2
+  #       - name: Check changed files
+  #         id: diff
+  #         run: |
+  #           git fetch origin $GITHUB_BASE_REF --depth=1
+  #           echo "$DIFF"
+  #           # Escape newlines (replace \n with %0A)
+  #           echo "::set-output name=diff::$( echo "$DIFF" | sed ':a;N;$!ba;s/\n/%0A/g' )"

@@ -79,7 +79,7 @@ jobs:
           echo ${{  steps.changes.outputs.dart }}
           echo ${{  steps.changes.outputs.packages }}
   next-test:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     name: test the matrix
     needs: packages
     strategy:

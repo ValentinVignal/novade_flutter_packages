@@ -38,7 +38,7 @@ jobs:
       matrix: ${{ fromJson(needs.packages.outputs.package) }}
     defaults:
       run:
-        working-directory: ./${{ matrix.package }}
+        working-directory: ${{ matrix.package }}
     steps:
       - uses: actions/checkout@v2
       - name: Set up Flutter
@@ -58,7 +58,7 @@ jobs:
       matrix: ${{ fromJson(needs.packages.outputs.package) }}
     defaults:
       run:
-        working-directory: ./${{ matrix.package }}
+        working-directory: ${{ matrix.package }}
     steps:
       - run: ls
       - uses: actions/checkout@v2

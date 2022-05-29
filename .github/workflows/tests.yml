@@ -74,5 +74,5 @@ jobs:
       - run: ls
       - name: Check spelling
         uses: streetsidesoftware/cspell-action@v1
-        # with:
-        #   root: ${{ matrix.package }}
+        with:
+          root: ${{ matrix.package }}

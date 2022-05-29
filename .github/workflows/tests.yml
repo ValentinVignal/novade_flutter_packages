@@ -55,6 +55,7 @@ jobs:
       run:
         working-directory: packages
     steps:
+      - uses: actions/checkout@v2
       - run: echo test
   spelling:
     # Verifies there is no spelling errors in the code.
@@ -68,9 +69,9 @@ jobs:
       run:
         working-directory: ${{ matrix.package }}
     steps:
+      - uses: actions/checkout@v2
       - run: echo ${{ matrix.package }}
       - run: ls
-      - uses: actions/checkout@v2
       - name: Check spelling
         uses: streetsidesoftware/cspell-action@v1
         # with:

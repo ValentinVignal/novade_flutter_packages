@@ -60,6 +60,7 @@ jobs:
       run:
         working-directory: ${{ matrix.package }}
     steps:
+      - run: echo ${{ matrix.package }}
       - run: ls
       - uses: actions/checkout@v2
       - name: Check spelling

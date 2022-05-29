@@ -56,14 +56,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.packages.outputs.package) }}
-    # defaults:
-    #   run:
-    #     working-directory: ./${{ matrix.package }}
+    defaults:
+      run:
+        working-directory: ${{ matrix.package }}
     steps:
       - run: echo ${{ matrix.package }}
       - run: ls
       - uses: actions/checkout@v2
       - name: Check spelling
         uses: streetsidesoftware/cspell-action@v1
-        with:
-          root: ${{ matrix.package }}
+        # with:
+        #   root: ${{ matrix.package }}

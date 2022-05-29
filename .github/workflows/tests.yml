@@ -48,6 +48,14 @@ jobs:
         uses: ValentinVignal/action-dart-analyze@v0.12
       - name: Run tests
         run: flutter test
+  test-working-directory:
+    runs-on: ubuntu-latest
+    name: Test
+    defaults:
+      run:
+        working-directory: packages
+    steps:
+      - run: echo test
   spelling:
     # Verifies there is no spelling errors in the code.
     runs-on: ubuntu-latest
